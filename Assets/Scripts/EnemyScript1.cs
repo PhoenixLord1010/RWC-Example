@@ -22,11 +22,14 @@ public class EnemyScript1 : MonoBehaviour
             jumpSpeed -= 0.2f;
         }
         
-        if (Physics.BoxCast(transform.position, new Vector3(0, 0.15f), Vector3.left, Quaternion.identity, 0.16f)) direction = 1;
-        if (Physics.BoxCast(transform.position, new Vector3(0, 0.15f), Vector3.right, Quaternion.identity, 0.16f)) direction = -1;
-
         for (int i = 0; i < 10; i++)
         {
+            if (Physics.BoxCast(transform.position, new Vector3(0, 0.15f), Vector3.left, Quaternion.identity, 0.16f)) direction = 1;
+            if (Physics.BoxCast(transform.position, new Vector3(0, 0.15f), Vector3.right, Quaternion.identity, 0.16f)) direction = -1;
+            
+            if (!Physics.BoxCast(new Vector3(transform.position.x - 0.32f, transform.position.y), new Vector3(0.15f, 0), Vector3.down, Quaternion.identity, 0.16f) && isGrounded()) direction = 1;
+            if (!Physics.BoxCast(new Vector3(transform.position.x + 0.32f, transform.position.y), new Vector3(0.15f, 0), Vector3.down, Quaternion.identity, 0.16f) && isGrounded()) direction = -1;
+        
             if (jumpSpeed < 0 && isGrounded()) jumpSpeed = 0;
 
             transform.Translate(moveSpeed * 0.1f * direction * Time.deltaTime, jumpSpeed * 0.1f * Time.deltaTime, 0);

@@ -21,13 +21,15 @@ public class FireballScript : MonoBehaviour
 	void Update () 
     {
         //Falling
-        if (jumpSpeed > -9 && !isGrounded())
+        if (jumpSpeed > -5 && !isGrounded())
         {
-            jumpSpeed -= 0.15f;
+            jumpSpeed -= 0.2f;
         }
+
+        if (jumpSpeed < -5) jumpSpeed = -5;
         
         //Movement
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 20; i++)
         {
             if (isGrounded() && hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && !hit.collider.isTrigger)
             {
@@ -37,7 +39,7 @@ public class FireballScript : MonoBehaviour
             if (Physics.SphereCast(transform.position, 0.1f, Vector3.left, out hit, 0.01f) && hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && !hit.collider.isTrigger) Destroy(gameObject);
             if (Physics.SphereCast(transform.position, 0.1f, Vector3.right, out hit, 0.01f) && hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Enemy" && !hit.collider.isTrigger) Destroy(gameObject);
 
-            transform.Translate(moveSpeed * 0.1f * Time.deltaTime, jumpSpeed * 0.1f * Time.deltaTime, 0);
+            transform.Translate(moveSpeed * 0.05f * Time.deltaTime, jumpSpeed * 0.05f * Time.deltaTime, 0);
         }
 
         //Timer

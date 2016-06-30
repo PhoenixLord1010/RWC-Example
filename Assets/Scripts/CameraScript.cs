@@ -18,7 +18,7 @@ public class CameraScript : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 50; i++)
         {
             if (player.transform.position.x > transform.position.x + 1)
             {
