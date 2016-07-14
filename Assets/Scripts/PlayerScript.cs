@@ -12,7 +12,7 @@ public class PlayerScript : MonoBehaviour
     private int isRight = 1;                //Which way is the player facing?
     
     private float ySpeed = 0;               //Vertical movement value
-    private float jumpHeight = 7;          //Jump height
+    private float jumpHeight = 7;           //Jump height
     private float gravity = 0.6f;           //Rate at which player falls
     private int jump = 1;                   //How many times can the player jump in midair?
 
@@ -45,7 +45,7 @@ public class PlayerScript : MonoBehaviour
                 if (xSpeed > -maxSpeed) xSpeed -= accel;                      //Increase speed by acceleration value
                 if (xSpeed < -maxSpeed) xSpeed = -maxSpeed;                   //Cap speed in case it goes over
             }
-            isRight = 0;                                        //Player is now facing left
+            isRight = 0;    //Player is now facing left
         }
         if (Input.GetKey("d"))                              //If the "d" key is held down
         {
@@ -80,7 +80,7 @@ public class PlayerScript : MonoBehaviour
         {
             clone = Instantiate(prefab, transform.position, transform.rotation) as Transform;   //Create a fireball prefab
             clone.SendMessage("SetDirection", isRight);         //Send the player's direction
-            clone.SendMessage("SetSpeed", xSpeed);           //Send the player's speed
+            clone.SendMessage("SetSpeed", xSpeed);              //Send the player's speed
         }
 
         // Idle
@@ -106,15 +106,15 @@ public class PlayerScript : MonoBehaviour
 
 
         //Collision stuff
-        for (int i=0; i < 20; i++)
+        for (int i=0; i < 20; i++)      //Repeat the following code 20 times
         {
-            if (castUp() && ySpeed > 0)     //If player collides with something above it
+            if (castUp() && ySpeed > 0)     //If player collides with something above it and is moving up
             {
                 ySpeed = 0.5f;          //Slow down the jump speed
 
-                if (hit.transform.tag == "Brick")
+                if (hit.transform.tag == "Brick")   //If colliding with a brick
                 {
-                    Destroy(hit.transform.gameObject);
+                    Destroy(hit.transform.gameObject);  //Destroy brick
                 }
             }
             if (castDown() && ySpeed < 0)   //If player collides with something below it
@@ -137,15 +137,27 @@ public class PlayerScript : MonoBehaviour
 
 
         //Dead
-        if (health.value == 0)                  //If health is zero
+        if (health.value == 0)              //If health is zero
         {
             SceneManager.LoadScene(level);      //Reload level
         }
 
         x = 0;  //Reset additional x value
+
+
+        if (Input.GetMouseButtonDown(0))    //If the left mouse button is clicked
+        {
+            //RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);    //Acquire the mouse's screen position
+            if (Physics.Raycast(ray, out hit, 100))     //If the mouse clicked on a gameobject
+            {
+                Destroy(hit.collider.gameObject);       //Destroy that gameobject
+            }
+        }
 	}
 
 
+    /*Collision Functions*/
     bool castUp()
     {
         return Physics.BoxCast(transform.position, new Vector3(0.15f, 0), Vector3.up, out hit, Quaternion.identity, 0.16f, 1, QueryTriggerInteraction.Ignore);      //If player collides with something above it
@@ -200,35 +212,41 @@ public class PlayerScript : MonoBehaviour
         {
             if (castDown())
             {
-                if (hit.transform.gameObject == other.gameObject)
+                if (hit.transform.gameObject == other.gameObject)   //If the enemy we're colliding with is below us
                 {
                     ySpeed = jumpHeight;                             //Player begins jump
                     Destroy(hit.transform.gameObject);               //Destroy enemy
                 }
                 else
                 {
-                    OnHit(other.transform.position);
+                    OnHit(other.transform.position);    //Get hurt
                 }
             }
             else
             {
-                OnHit(other.transform.position);
+                OnHit(other.transform.position);    //Get hurt
             }
+        }
+
+        if (other.transform.tag == "Trap")      //If colliding with a trap
+        {
+            OnHit(other.transform.position);    //Get hurt
         }
     }
 
+    //Player is hurt
     void OnHit(Vector3 pos)
     { 
         health.value--;                         //Lose health
 
         if (pos.x - transform.position.x > 0)   //If player is to the left of the enemy
         {
-            xSpeed = -2;     //Bump player over to the left
+            xSpeed = -3;     //Bump player over to the left
         }
         else
         {
-            xSpeed = 2;      //Bump player over to the right
+            xSpeed = 3;      //Bump player over to the right
         }
-        ySpeed = 2;          //Pop player into the air
+        ySpeed = 3;          //Pop player into the air
     }
 }
